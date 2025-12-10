@@ -27,9 +27,9 @@ public class CrossBrowserTesting {
 			System.out.println("Invalid browser");
 			return;
 		}
-		driver.get("https://www.puma.com/");
 		driver.manage().window().maximize();
-		
+		driver.get("https://www.puma.com/");
+		driver.quit();
 	}
 
 }
