@@ -8,38 +8,45 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
 public class MultiSelectDropdownTest {
-    @Test
-    public void f() {
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("https://demo.mobiscroll.com/select/multiple-select");
+   	@Test
+    public void selectDropdownOption() {
+    	 WebDriver driver = new ChromeDriver();
+         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+         driver.manage().window().maximize();
+         driver.get("https://demo.mobiscroll.com/select/multiple-select");
 
-        // 1) Click the visible field (span overlay) - not the hidden input
-        WebElement field = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//span[contains(@class,'mbsc-textfield-tags')]")
-        ));
-        field.click();
+         WebElement input = wait.until(
+                 ExpectedConditions.presenceOfElementLocated(By.id("multiple-select-input"))
+         );
+         input.sendKeys(Keys.ENTER);
 
-        // 2) Select "Books"
-        WebElement books = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[normalize-space(text())='Books']")
-        ));
-        books.click();
+         wait.until(ExpectedConditions.presenceOfElementLocated(
+                 By.cssSelector(".mbsc-popup-anchored")
+         ));
 
-        // 3) Select "Movies, Music & Games"
-        WebElement mmg = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[normalize-space(text())='Movies, Music & Games']")
-        ));
-        mmg.click();
+         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(
+                 By.cssSelector(".mbsc-scroller-wheel-item[role='option']")
+         ));
 
-        // 4) Click the Set button
-        WebElement setBtn = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[normalize-space(text())='Set']")
-        ));
-        setBtn.click();
+         List<WebElement> options = driver.findElements(
+                 By.cssSelector(".mbsc-scroller-wheel-item[role='option']")
+         );
 
-        driver.quit();
-    }
+         List<String> toSelect = Arrays.asList("Books", "Movies, Music & Games", "Health & Beauty", "Sports & Outdoors");
+
+         for (WebElement op : options) {
+             if (op.isDisplayed()) {          
+                 String text = op.getText().trim();
+                 if (toSelect.contains(text)) {
+                     op.click();
+                 }
+             }
+         }
+         
+         input.sendKeys(Keys.ENTER);
+
+         driver.quit();
+     }
+
 }
